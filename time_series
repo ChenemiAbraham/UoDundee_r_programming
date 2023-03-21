@@ -1,0 +1,95 @@
+---
+title: "BU52023 - Lab 1"
+author: "Chenemi Abraham"
+date: "20/03/2023"
+output:
+  word_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Lab 1 
+
+Welcome to Lab 1 for Forecasting for Business and Finance (BU52023)! 
+
+In this session, we will learn how to do some basic manipulations with time series data. 
+
+First, let's set our working directory to where we have our data. The data we will use for this session is called "Annual-Sales_1970-2016.xlsx". 
+
+
+```{r}
+setwd("C:/Users/Chenemi_Abraham/OneDrive - University of Dundee/Business Analytics/Forcasting for Business and Finance/Lab1")
+```
+
+Then, we need to import our data set into RStudio. The file extension is .xls so we will need to use the 'readxl' package. 
+
+```{r}
+library("readxl")
+```
+
+We now import the data, note, how we use the col_names option to title the column "Sales". 
+
+```{r}
+Annual_Sales <- read_excel("Annual-Sales_1970-2016.xlsx", col_names = "sales")
+```
+
+OK, we got the data imported. Make sure you click on the data frame object in the top right corner. Otherwise you can just type the command below to view the data. Also make sure you save your RMarkdown file. 
+
+```{r}
+View(Annual_Sales)
+```
+
+
+We have got annual sales data from 1970 to 2016. You will notice however that the data is not set up as a time series (there is only one variable and no indicator for time). Nonetheless, we can assume that the first year corresponds to the first observation in our data. Now, we need to set the data up as a time series. 
+
+```{r}
+salests<-ts(Annual_Sales[[1]], frequency=1, start=c(1970,1)) 
+```
+
+Important things to note here. We set the frequency equal to one because our data is annual. If it was, say, quarterly data, this would have been four. This also means that the unit of the time series is one, see the final part c(1970,1) which tells R that the time series starts at 1970 and then each unit is a subsequent year. Let's see how this looks on a plot. 
+
+```{r} 
+ts.plot(salests)
+``` 
+
+# Data manipulations 
+
+Let's do some data manipulations/transformations on our time series. We would like to first do a log transformation of our sales variable, and then take the first difference of both variables. 
+
+Log transformation we might want to do to take care of nonlinearity in our time series (for example, an exponential trend). 
+
+Differencing on the other hand can help us remove a trend and seasonality from our time series. We will learn about this in more detail later. 
+
+```{r}
+#transform into log and assign time series dimension
+data$log_sales <- log(data$sales)
+log_salests<-ts(data[[2]], frequency=1, start=c(1970,1))
+```
+
+
+```{r}
+
+# add to data frame 
+diff <- diff(salests, diff = 1)
+difflog <- diff(log_salests, diff = 1)
+
+
+
+               
+```
+
+Now let's plot all of these and analyse. 
+
+```{r} 
+
+ts.plot(salests) 
+ts.plot(log_salests)
+ts.plot(diff)
+ts.plot(difflog)
+
+``` 
+
+The main series clearly has a trend. Differencing gets rid of this and the differenced series seems largely random. We will learn a bit more about this in future labs. For now, that's it for the first lab, well done! 
